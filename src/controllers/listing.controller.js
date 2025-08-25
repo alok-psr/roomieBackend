@@ -68,4 +68,17 @@ const registerListing = asyncHandler(async (req,res)=>{
     }
 })
 
-export { registerListing }
+const getAllListing = asyncHandler(async (req,res)=>{
+    let query;
+    try {
+        query=await Listing.find({})
+        console.log(query, '\n', typeof(query))
+        res.status(200).json(new ApiRes(200,query,"fetched all listings successfully ... less goo bitch"))
+    } catch (error) {
+        throw new ApiErr(501 ,"unable to fetch listings", error)
+    }
+    
+    
+})
+
+export { registerListing,getAllListing }

@@ -30,9 +30,9 @@ const listingSchema = new Schema({
     tags: [String],
     availableFrom:Date,
     postedBy: {
-        // type:mongoose.Schema.Types.ObjectId, 
-        // ref:"User"
-        type:String
+        type:mongoose.Schema.Types.ObjectId, 
+        ref:"User"
+        // type:String
     },
     isAvailable:{
         type:Boolean,
