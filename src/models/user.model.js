@@ -1,8 +1,8 @@
-import mongoose,{Schema} from "mongoose";
+import mongoose,{ Schema} from "mongoose";
 
 const userSchema = new Schema({
 
-    uid:{
+    _id:{
         type:String,
         required:true
     },
@@ -34,7 +34,13 @@ const userSchema = new Schema({
         type:String,
         trim:true,
         unique:true
-    }
+    },
+    likedRoomies:[{type:mongoose.Schema.Types.ObjectId,
+        ref:"roomie"
+    }],
+    bookMarkedRoomies:[{type:mongoose.Schema.Types.ObjectId,
+        ref:"roomie"
+    }]
 
 },{timestamps:true})
 
