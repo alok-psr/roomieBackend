@@ -32,9 +32,9 @@ const registerUser = asyncHandler(async (req, res) => {
 
     return res
       .status(201)
-      .json(new ApiRes(201, { user: createdUser, token }, "User registered successfully ✅"));
+      .json(new ApiRes(201, { user: createdUser, token }, "User registered successfully "));
   } catch (error) {
-    console.error("Registration failed ❌", error);
+    console.error("Registration failed ", error);
     return res.status(500).json(new ApiRes(500, null, "User registration failed"));
   }
 });
