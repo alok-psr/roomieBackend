@@ -9,9 +9,9 @@ const PORT = process.env.PORT || 3000
 
 connectDB()
 .then(()=>(
-    app.listen(PORT,()=>{
-        console.log(`app running at port ${PORT}`)
-    })
+    app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
+})
 ))
 .catch(
     (e)=>(console.log('err while connecting the DB ... ',e))
