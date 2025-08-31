@@ -3,37 +3,42 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import {ApiErr} from "../utils/ApiErr.js"
 import {ApiRes} from "../utils/ApiRes.js"
 
-const registerUser = asyncHandler(async (req,res)=>{
-    let {name,email,age,phoneNumber,password} = req.body;
+const registerUser = asyncHandler(async (req, res) => {
+  try {
+    let { name, email, age, phoneNumber, password } = req.body;
 
-    
-    age = Number(age)
-    phoneNumber = Number(phoneNumber)
-    
-    console.log([name,email,age,phoneNumber,password])
-    const existedUser = await User.findOne({$or:[{email}]})
+    age = Number(age);
+    phoneNumber = Number(phoneNumber);
+
+    console.log("Register attempt:", [name, email, age, phoneNumber, password]);
+
+    const existedUser = await User.findOne({ email });
     if (existedUser) {
-        throw new ApiErr(500 , "user already exits in the db")
+      return res.status(400).json(new ApiRes(400, null, "User already exists in the DB"));
     }
 
-    let user;
-    try {
-        user = await User.create({
-            name,
-            age,
-            phoneNumber,
-            email,
-            password
-        })
-    } catch (error) {
-        throw new ApiErr(400,"user not created", error)
-    }
-    const token = user.generateAccessToken()
-    user.save;
-    const createdUser =await User.findById(user._id).select('-passsword')
+    const user = await User.create({
+      name,
+      age,
+      phoneNumber,
+      email,
+      password,
+    });
 
-    return res.status(200).json(new ApiRes(200, createdUser, "user registered successfully"))
-})
+    const token = user.generateAccessToken();
+
+    // make sure password never leaks
+    const createdUser = await User.findById(user._id).select("-password");
+
+    return res
+      .status(201)
+      .json(new ApiRes(201, { user: createdUser, token }, "User registered successfully ✅"));
+  } catch (error) {
+    console.error("Registration failed ❌", error);
+    return res.status(500).json(new ApiRes(500, null, "User registration failed"));
+  }
+});
+
 
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -56,7 +61,7 @@ const loginUser = asyncHandler(async (req, res) => {
     const token = await user.generateAccessToken();
     return res.status(200).json(new ApiRes(200, { user, token }, "User fetched"));
   } catch (error) {
-    console.error("Login failed ❌", error);
+    console.error("Login failed ", error);
     return res.status(500).json(new ApiRes(500, null, "Login failed"));
   }
 });
