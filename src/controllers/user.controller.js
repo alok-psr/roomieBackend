@@ -35,28 +35,28 @@ const registerUser = asyncHandler(async (req,res)=>{
     return res.status(200).json(new ApiRes(200, createdUser, "user registered successfully"))
 })
 
-const loginUser = asyncHandler(async (req,res)=>{
-
+const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
     try {
         const user = await User.findOne({ email: email });
+        if (!user) {
+            throw new ApiErr(404, "User not found");
+        }
+        if (typeof password !== "string") {
+            throw new ApiErr(400, "Password must be a string");
+        }
         const pswdCmp = await user.isPasswordCorrect(password);
         if (pswdCmp) {
-            console.log("logging in ", email, password);
-            // console.log(user.password)
-            let token;
-            token = await user.generateAccessToken();
-            console.log(user.accessToken);
+            let token = await user.generateAccessToken();
             return res.status(200).json(new ApiRes(200, user, "user fetched"));
-        }
-        else{
-            throw new ApiErr(400, "wrong password")
+        } else {
+            throw new ApiErr(400, "wrong password");
         }
     } catch (error) {
-
-        console.log("login failed", error)
-        throw new ApiErr(500, "login failed ", error)
-}})
+        console.log("login failed", error);
+        throw new ApiErr(500, "login failed", error);
+    }
+});
 
 export {
     registerUser,
