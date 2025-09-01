@@ -29,6 +29,18 @@ const userSchema = new Schema({
     }],
     accessToken:String,
 
+    // New attributes
+    dealbrakers: [{ type: String }],
+    budget: { type: Number },
+    interests: [{ type: String }],
+    leaseDuration: { type: Number }, // in months
+    moveinDate: { type: Date },
+    description:String,
+    isLooking:{
+        type:Boolean,
+        default:false
+    }
+
 },{timestamps:true})
 
 userSchema.pre('save',async function (next) {
