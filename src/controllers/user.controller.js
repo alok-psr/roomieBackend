@@ -3,6 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import {ApiErr} from "../utils/ApiErr.js"
 import {ApiRes} from "../utils/ApiRes.js"
 import jwt from "jsonwebtoken";
+import { cloudinaryUpload } from "../utils/cloudinary.js";
 
 const registerUser = asyncHandler(async (req, res) => {
   try {
@@ -103,6 +104,19 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         interests = interests.split(",").map(s => s.trim());
       }
     }
+
+    // updating the avatar
+    const avatarLocalPath = req.file?.path
+    console.log(avatarLocalPath)
+    if(!avatarLocalPath){
+        throw new ApiErr(400, "avatar file is required")
+    }
+
+    const avatar = await cloudinaryUpload(avatarLocalPath)
+    if (!avatar.url){
+        throw new ApiErr(500, "avatar url not found")
+    }
+    if(avatar.url) user.avatar = avatar.url
 
     // Update fields if provided
     if (name) user.name = name;

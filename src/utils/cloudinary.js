@@ -13,9 +13,11 @@ cloudinary.config({
 
 
 const cloudinaryUpload = async(filePath)=>{
+
+    console.log("from cloud.js")
     console.log(filePath)
     try {
-        const result = await cloudinary.uploader.upload(filePath,{resource_type:"auto", timeout:60000})
+        const result = await cloudinary.uploader.upload(filePath,{resource_type:"auto"})
     
         console.log("uploaded on cloudinary")
         console.log("del from local folder ....")

@@ -39,7 +39,8 @@ const userSchema = new Schema({
     isLooking:{
         type:Boolean,
         default:false
-    }
+    },
+    avatar:String,
 
 },{timestamps:true})
 
