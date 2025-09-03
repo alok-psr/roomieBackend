@@ -73,9 +73,10 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   try {
     let { name, age, phoneNumber, dealbrakers, budget, interests, leaseDuration, moveinDate, description, accessToken } = req.body;
 
-    if (!accessToken) {
-      return res.status(401).json(new ApiRes(401, null, "Access token required"));
-    }
+    console.log({
+      description,
+      accessToken
+    })
 
     let decoded;
     try {
