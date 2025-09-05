@@ -168,10 +168,39 @@ const getUser = asyncHandler(async (req,res)=>{
   }
 })
 
+const likeRoomie = asyncHandler(async (req, res) => {
+  const { accessToken, id } = req.body;
+
+  if (!accessToken || !id) {
+    res.status(400);
+    throw new Error("Both accessToken and id are required");
+  }
+
+  const updatedUser = await User.findOneAndUpdate(
+    { accessToken }, 
+    { $addToSet: { likedRoomies: id } },
+    { new: true }
+  ).populate("likedRoomies", "description name age budget interests leaseDuration dealbrakers moveInDate avatar"); 
+
+  if (!updatedUser) {
+    res.status(404);
+    throw new ApiErr(404,"User not found with this accessToken");
+  }
+
+  res.status(200).json({
+    message: "Roomie liked successfully",
+    likedRoomies: updatedUser.likedRoomies,
+  });
+});
+
+
+
 export {
     registerUser,
     loginUser,
     updateUserProfile,
     getAllUsers,
-    getUser
+    getUser,
+    likeRoomie,
+
 }

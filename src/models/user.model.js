@@ -22,7 +22,7 @@ const userSchema = new Schema({
     },
     password:{type:String, required:true},
     likedRoomies:[{type:mongoose.Schema.Types.ObjectId,
-        ref:"roomie"
+        ref:"User"
     }],
     bookMarkedRoomies:[{type:mongoose.Schema.Types.ObjectId,
         ref:"roomie"
@@ -41,6 +41,7 @@ const userSchema = new Schema({
         default:false
     },
     avatar:String,
+
 
 },{timestamps:true})
 
