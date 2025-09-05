@@ -109,14 +109,13 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     // updating the avatar
     
     if(!req.file?.buffer){
-        throw new ApiErr(400, "avatar file is required")
+        new ApiRes(400, "avatar file is required")
     }
     console.log("file buffer ::",req.file.buffer)
     const avatar = await cloudinaryUpload(req.file.buffer)
     if (!avatar.secure_url){
-      throw new ApiErr(500, "avatar url not found")
+      new ApiRes(500, "avatar url not found")
     }
-    console.log("result.secure_url ::",avatar.secure_url)
     if(avatar.secure_url) user.avatar = avatar.secure_url
 
     // Update fields if provided
