@@ -152,10 +152,23 @@ const getAllUsers = asyncHandler(async (req, res) => {
     return res.status(500).json(new ApiRes(500, null, "Failed to fetch users"));
   }
 });
+const getUser = asyncHandler(async (req,res)=>{
+  try {
+    const {accessToken} = req.body
+    const user =await User.findOne({accessToken})
+    // const user = res.json();
+    console.log("got the user ", user)
+    return res.status(200).json(new ApiRes(200, user, "user fetched "))
+  } catch (error) {
+    console.log("unable to get the user", error)
+    return res.json(new ApiRes(500, {}, "unable to get user"))
+  }
+})
 
 export {
     registerUser,
     loginUser,
     updateUserProfile,
-    getAllUsers
+    getAllUsers,
+    getUser
 }
