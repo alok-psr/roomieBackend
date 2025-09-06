@@ -9,6 +9,7 @@ cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
+  timeout:5000
 })
 
 // upload buffer directly
@@ -22,7 +23,10 @@ const cloudinaryUpload = async (fileBuffer, folder = "roomie_uploads") => {
           else resolve(result);
         }
       );
-      streamifier.createReadStream(fileBuffer).pipe(uploadStream);
+      streamifier.createReadStream(fileBuffer).pipe(uploadStream).on("finish", () => {
+        console.log("Upload stream finished piping");}
+      );
+
     });
   } catch (error) {
     throw new ApiErr(500, "cloudinary upload failed", error);

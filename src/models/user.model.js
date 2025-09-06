@@ -28,6 +28,12 @@ const userSchema = new Schema({
         ref:"roomie"
     }],
     accessToken:String,
+    occupation:{type:String,
+        default:"Student"
+    },
+    workPlace:{type:String,
+        default:"University"
+    },
 
     // New attributes
     dealbrakers: [{ type: String }],

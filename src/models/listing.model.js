@@ -27,22 +27,20 @@ const listingSchema = new Schema({
             default:"delhi"
         },
     },
-    tags: [String],
-    availableFrom:Date,
-    postedBy: {
-        type:mongoose.Schema.Types.ObjectId, 
-        ref:"User"
-        // type:String
+    houseRules: [String],
+    ownerName: {
+        type:String
     },
     isAvailable:{
         type:Boolean,
         default:true
     },
+    phoneNumber:{
+        type:String
+    },
     coverImage:{
         type:String,
-        required:true
     },
-    // referenceImages:[String]
 
 },{timestamps:true})
 

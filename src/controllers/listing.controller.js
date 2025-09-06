@@ -5,30 +5,22 @@ import { ApiRes } from "../utils/ApiRes.js"
 import { cloudinaryRemove, cloudinaryUpload } from "../utils/cloudinary.js"
 
 const registerListing = asyncHandler(async (req,res)=>{
-    let {listingName, description, rent, address, tags, postedBy, isAvailable} = req.body;
+    let {listingName, description, rent, phoneNumber, address, tags, houseRules, isAvailable, ownerName} = req.body;
     
-    if([listingName,description,rent,address,postedBy].some((ele)=>ele?.trim()==='' )){
+    if([listingName,description,rent,address,ownerName].some((ele)=>ele?.trim()==='' )){
         console.log('all fields required')
         throw new ApiErr(401,"all fields are required " )
     }
 
-    let parsedAddress = address;
-    let parsedTags = tags;
-    if (typeof address === 'string') parsedAddress = JSON.parse(address);
-    if (typeof tags === 'string') parsedTags = JSON.parse(tags);
+    let parsedTags = houseRules;
+    if (typeof tags === 'string') tags = JSON.parse(tags);
+    if (typeof houseRules === 'string') parsedTags = JSON.parse(houseRules);
 
     rent = Number(rent)
     isAvailable = isAvailable ==="true"
 
-    let coverImageLocalPath;
-    try {
-        coverImageLocalPath = req.file?.path
-        console.log(coverImageLocalPath)
-    } catch (e) {
-        throw new ApiErr(400, 'cover image not found locally')
-    }
+    
 
-    const coverImage = await cloudinaryUpload(coverImageLocalPath)
 
     let listing ;
     try {
@@ -38,21 +30,30 @@ const registerListing = asyncHandler(async (req,res)=>{
         description,
         rent,
         address:parsedAddress,
-        tags: parsedTags,
-        postedBy,
+        houseRules: parsedTags,
+        ownerName,
         isAvailable,
-        coverImage: coverImage?.url
+        // coverImage: coverImage?.url
         });
+        let coverImage;
+        if (req.file?.buffer) {
+            console.log("file buffer ::", req.file.buffer);
+            coverImage = await cloudinaryUpload(req.file.buffer);
+            console.log(coverImage.url)
+        }
         listing = await Listing.create({
             listingName,
             description,
             rent,
-            address:parsedAddress,
-            tags:parsedTags,
-            postedBy,
+            address,
+            tags,
+            houseRules:parsedTags,
+            ownerName,
             isAvailable,
-            coverImage:coverImage.url
+            phoneNumber,
+            coverImage:coverImage.secure_url
         })
+        
         console.log("done")
         console.log(listing._id)
         // const newListing = await Listing.findById(listing._id)
@@ -61,9 +62,6 @@ const registerListing = asyncHandler(async (req,res)=>{
         // }
         res.status(200).json(new ApiRes(200,listing,"listing was created successfully"))
     } catch (error) {
-        if(coverImage){
-            cloudinaryRemove(coverImageLocalPath)
-        }
         throw new ApiErr(501, 'unable to create a new listing',error)
     }
 })
@@ -77,8 +75,6 @@ const getAllListing = asyncHandler(async (req,res)=>{
     } catch (error) {
         throw new ApiErr(501 ,"unable to fetch listings", error)
     }
-    
-    
 })
 
 export { registerListing,getAllListing }

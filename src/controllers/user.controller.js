@@ -27,7 +27,7 @@ const registerUser = asyncHandler(async (req, res) => {
       password,
     });
 
-    const token = user.generateAccessToken();
+    const token =await user.generateAccessToken();
 
     // make sure password never leaks
     const createdUser = await User.findById(user._id).select("-password");
@@ -71,7 +71,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
 const updateUserProfile = asyncHandler(async (req, res) => {
   try {
-    let { name, age, phoneNumber, dealbrakers, budget, interests, leaseDuration, moveinDate, description, accessToken } = req.body;
+    let {occupation,workPlace, name, age, phoneNumber, dealbrakers, budget, interests, leaseDuration, moveinDate, description, accessToken } = req.body;
 
     console.log({
       description,
@@ -132,6 +132,8 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     if (interests) user.interests = interests;
     if (leaseDuration) user.leaseDuration = Number(leaseDuration);
     if (moveinDate) user.moveinDate = new Date(moveinDate);
+    if (occupation) user.occupation = occupation;
+    if (workPlace) user.workPlace = workPlace
     user.isLooking = true
 
     await user.save();
