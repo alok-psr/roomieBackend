@@ -71,7 +71,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
 const updateUserProfile = asyncHandler(async (req, res) => {
   try {
-    let {occupation,workPlace, name, age, phoneNumber, dealbrakers, budget, interests, leaseDuration, moveinDate, description, accessToken } = req.body;
+    let {occupation,workPlace, location ,name, age, phoneNumber, dealbrakers, budget, interests, leaseDuration, moveinDate, description, accessToken } = req.body;
 
     console.log({
       description,
@@ -133,7 +133,8 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     if (leaseDuration) user.leaseDuration = Number(leaseDuration);
     if (moveinDate) user.moveinDate = new Date(moveinDate);
     if (occupation) user.occupation = occupation;
-    if (workPlace) user.workPlace = workPlace
+    if (workPlace) user.workPlace = workPlace;
+    if (location) user.location = location;
     user.isLooking = true
 
     await user.save();

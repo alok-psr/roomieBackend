@@ -29,11 +29,12 @@ const userSchema = new Schema({
     }],
     accessToken:String,
     occupation:{type:String,
-        default:"Student"
     },
     workPlace:{type:String,
-        default:"University"
     },
+    location:String,
+    
+
 
     // New attributes
     dealbrakers: [{ type: String }],
